@@ -1,0 +1,24 @@
+{
+  "name": "flare-setup-bot",
+  "version": "1.0.0",
+  "description": "Discord setup bot that bootstraps and maintains the Flare HQ server",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "deploy": "tsx src/deploy-commands.ts"
+  },
+  "author": "Filipe Fernandes",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "discord.js": "^14.17.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "@types/node": "^22.0.0"
+  }
+}
