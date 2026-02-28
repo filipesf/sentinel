@@ -3,7 +3,7 @@ import {
   MessageFlags,
   SlashCommandBuilder,
 } from 'discord.js';
-import { agentConfigs } from '../../config/server-architecture.js';
+import { activeAgents, agentConfigs } from '../../config/server-architecture.js';
 import { createSessionThread } from '../../services/thread-creator.js';
 import type { Command } from '../../types.js';
 
@@ -23,10 +23,12 @@ const command: Command = {
         .setDescription('Agent to use (defaults to channel default)')
         .setRequired(false)
         .addChoices(
-          ...Object.entries(agentConfigs).map(([key, cfg]) => ({
-            name: `${cfg.emoji} ${cfg.name}`,
-            value: key,
-          })),
+          ...activeAgents
+            .filter((key) => agentConfigs[key])
+            .map((key) => ({
+              name: `${agentConfigs[key]!.emoji} ${agentConfigs[key]!.name}`,
+              value: key,
+            })),
         ),
     ),
 

@@ -47,11 +47,14 @@ What happens:
 
 ### Channel awareness
 
-The agent receives the **channel name and category** as context. This means:
+The agent receives the **channel name and category** as context. Corven uses this to switch between squad contexts in its workspace (see `OPERATING_SYSTEM.md`):
 
-- `/growth prompt:"..."` → Corven knows this is a campaign/outbound context
-- `/content prompt:"..."` → Corven knows this is a content creation context
-- `/corven prompt:"..."` → Corven knows this is a freeform 1:1 conversation
+- `/growth prompt:"..."` → Thread in `#growth` — Corven activates growth context
+- `/content prompt:"..."` → Thread in `#content` — Corven activates content context
+- `/ops prompt:"..."` → Thread in `#ops` — Corven activates ops context
+- `/corven prompt:"..."` → Thread in `#corven` — freeform 1:1 conversation
+
+All commands route to **Corven** (single-agent runtime). When dedicated squad agents are added to OpenClaw, update `activeAgents` and `channelAgentDefaults` in `server-architecture.ts`.
 
 ### Per-agent commands
 
@@ -63,7 +66,9 @@ The agent receives the **channel name and category** as context. This means:
 | `/content prompt`         | `#content`      | Routed — posts, copy, content calendar             |
 | `/ops prompt`             | `#ops`          | Routed — checklists, tracking, reports             |
 | `/leads prompt`           | `#growth`       | Routed — lead generation (routes to growth)        |
-| `/decision title`         | `#squad-feed`   | Routed — posts a decision embed (no agent session) |
+| `/decision title`         | `#squad-feed`   | Routed — posts a decision embed (no agent session)      |
+| `/standup [agent]`        | `#squad-feed`   | Routed — posts standup embed (Corven only, single agent)|
+| `/report type`            | `#ops`          | Routed — posts weekly report or daily checklist (Corven)|
 
 **Validation:** The bot verifies the agent has access to the destination channel before creating the thread. If the agent lacks access, the bot responds with an ephemeral error.
 
@@ -88,13 +93,27 @@ Prompts are truncated to ~80 characters with markdown/special characters strippe
 
 ## Active Agents
 
-### Corven 🪶 (active)
+> **Current runtime: Corven-only.** All squad channels route to Corven, which uses workspace context-switching (see `OPERATING_SYSTEM.md` in the Corven workspace). The `agentConfigs` in code define future squad agents (`flare-growth`, `flare-content`, `flare-ops`, `flare-leads`) but they are **not registered in OpenClaw** and cannot respond to messages. The `activeAgents` list in `server-architecture.ts` controls which agents appear in dropdowns and standups.
 
-- **Role:** Personal companion — warm, playful, creative
+### Corven 🪶 (active — single agent)
+
+- **Role:** Personal companion + multi-context squad operator
 - **Discord role:** `Corven` (managed bot role, auto-created by Discord)
 - **Backend:** OpenClaw gateway running in Docker on `openclaw-vm`
 - **Access:** AGENTS, SQUADS categories
 - **Commands:** `/corven`, `/session`, `/growth`, `/content`, `/ops`, `/leads`
+- **Context switching:** Channel name determines which squad context Corven loads from its workspace (`work/flare/squads/<squad>/WORKING.md`)
+
+### Future squad agents (defined in code, not yet active)
+
+These configs exist in `agentConfigs` for forward-compatibility. They will become active when registered in OpenClaw and added to `activeAgents`:
+
+| Key             | Emoji | Default channel | Purpose                                       |
+| --------------- | ----- | --------------- | --------------------------------------------- |
+| `flare-growth`  | 🎯    | `#growth`       | Pipeline & outbound — campaigns, ICP, leads   |
+| `flare-content` | 📝    | `#content`      | Content marketing — posts, copy, calendar     |
+| `flare-ops`     | 📋    | `#ops`          | Operations & tracking — checklists, reports   |
+| `flare-leads`   | 🔍    | `#growth`       | Lead list builder — enrichment, prospecting   |
 
 ---
 
@@ -268,7 +287,7 @@ This bot exists to **bootstrap and maintain** the server and **trigger agent ses
 
 ### Slash Commands
 
-**Session commands (7):**
+**Session & activity commands (9):**
 
 | Command                                             | Type       | Destination     | Description                            |
 | --------------------------------------------------- | ---------- | --------------- | -------------------------------------- |
@@ -278,7 +297,9 @@ This bot exists to **bootstrap and maintain** the server and **trigger agent ses
 | `/content prompt`                                   | Routed     | `#content`      | Content creation session               |
 | `/ops prompt`                                       | Routed     | `#ops`          | Operations session                     |
 | `/leads prompt`                                     | Routed     | `#growth`       | Lead generation session                |
-| `/decision title [context] [alternatives] [impact]` | Routed     | `#squad-feed`   | Log a decision (embed)                 |
+| `/decision title [context] [alternatives] [impact]` | Routed     | `#squad-feed`   | Log a decision (embed)                        |
+| `/standup [agent]`                                  | Routed     | `#squad-feed`   | Post standup (active agents only — Corven)    |
+| `/report type`                                      | Routed     | `#ops`          | Post weekly report or daily checklist (Corven)|
 
 **Infrastructure commands (8):**
 
@@ -329,7 +350,7 @@ This bot exists to **bootstrap and maintain** the server and **trigger agent ses
 
 Sentinel and Corven are separate Discord applications with different bot tokens:
 
-- **Sentinel** registers: `/setup`, `/corven`, `/session`, `/growth`, `/content`, `/ops`, `/leads`, `/decision`, `/create`, `/assign`, `/permissions`, `/audit`, `/status`
+- **Sentinel** registers: `/setup`, `/corven`, `/session`, `/growth`, `/content`, `/ops`, `/leads`, `/decision`, `/standup`, `/report`, `/create`, `/assign`, `/permissions`, `/audit`, `/status`
 - **OpenClaw/Corven** registers: `/activation`, `/model`, `/focus`, `/unfocus`, `/agents`
 
 They coexist in the same server. OpenClaw's commands only work in channels where Corven has `ViewChannel`.
@@ -346,6 +367,8 @@ They coexist in the same server. OpenClaw's commands only work in channels where
 | `src/config/server-architecture.ts`        | Source of truth — architecture as code                   |
 | `src/services/openclaw-ws.ts`              | Gateway WebSocket RPC client                             |
 | `src/services/openclaw-client.ts`          | Dual-path agent trigger (WS + HTTP fallback)             |
+| `src/commands/standup.ts`                  | `/standup` — Corven standup embed to `#squad-feed`       |
+| `src/commands/report.ts`                   | `/report` — weekly summary / daily checklist to `#ops` (Corven) |
 | `src/services/thread-creator.ts`           | Agent thread creation + member addition + agent trigger  |
 | `src/services/setup-executor.ts`           | `/setup full` — idempotent bootstrap with `--clean`      |
 | `src/services/update-executor.ts`          | `/setup update` — reconciliation (create + update only)  |

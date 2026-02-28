@@ -14,6 +14,8 @@ import leadsCommand from './commands/agents/leads.js';
 
 // Activity commands
 import decisionCommand from './commands/decision.js';
+import standupCommand from './commands/standup.js';
+import reportCommand from './commands/report.js';
 
 // Infrastructure commands
 import assignCommand from './commands/assign/index.js';
@@ -61,6 +63,8 @@ const commands: Command[] = [
   leadsCommand,
   // Activity commands
   decisionCommand,
+  standupCommand,
+  reportCommand,
   // Infrastructure commands
   statusCommand,
   setupCommand,

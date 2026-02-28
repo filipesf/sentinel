@@ -339,6 +339,38 @@ export const agentConfigs: Record<string, AgentConfig> = {
     accessibleCategories: ['\u{1f916} AGENTS', '\u{1f680} SQUADS'],
     deniedChannels: [],
   },
+  'flare-growth': {
+    name: 'flare-growth',
+    roleName: 'flare-growth',
+    emoji: '\u{1f3af}',
+    color: 3447003, // #3498db
+    accessibleCategories: ['\u{1f680} SQUADS'],
+    deniedChannels: [],
+  },
+  'flare-content': {
+    name: 'flare-content',
+    roleName: 'flare-content',
+    emoji: '\u{1f4dd}',
+    color: 2067276, // #1f8b4c
+    accessibleCategories: ['\u{1f680} SQUADS'],
+    deniedChannels: [],
+  },
+  'flare-ops': {
+    name: 'flare-ops',
+    roleName: 'flare-ops',
+    emoji: '\u{1f4cb}',
+    color: 15105570, // #e67e22
+    accessibleCategories: ['\u{1f680} SQUADS'],
+    deniedChannels: [],
+  },
+  'flare-leads': {
+    name: 'flare-leads',
+    roleName: 'flare-leads',
+    emoji: '\u{1f50d}',
+    color: 10181046, // #9b59b6
+    accessibleCategories: ['\u{1f680} SQUADS'],
+    deniedChannels: [],
+  },
 };
 
 // ─── Command Routing ────────────────────────────────────────────
@@ -358,6 +390,8 @@ export const commandRouting: Record<string, string | null> = {
 
   // Activity commands (routed to destination)
   decision: 'squad-feed',
+  standup: 'squad-feed',
+  report: 'ops',
 };
 
 // ─── Channel → Agent Defaults ───────────────────────────────────
@@ -365,6 +399,8 @@ export const commandRouting: Record<string, string | null> = {
 // is resolved from the channel. Phase 1: everything → corven.
 // Phase 2: each squad channel maps to its dedicated agent.
 
+// Phase 2: update these to dedicated agents once they exist in OpenClaw
+// (flare-growth, flare-content, flare-ops). Until then, Corven handles all.
 export const channelAgentDefaults: Record<string, string> = {
   corven: 'corven',
   research: 'corven',
@@ -373,3 +409,11 @@ export const channelAgentDefaults: Record<string, string> = {
   ops: 'corven',
   'squad-feed': 'corven',
 };
+
+// ─── Active Agents ──────────────────────────────────────────────
+// Agents that actually exist in OpenClaw and can respond to messages.
+// Used to filter dropdown choices in /session and standup agent pickers.
+// Phase 1: Corven only. Phase 2: add flare-growth, flare-content, etc.
+// once they are registered in the OpenClaw gateway.
+
+export const activeAgents: string[] = ['corven'];

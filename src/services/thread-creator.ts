@@ -8,15 +8,16 @@
  *    regardless of where the command was invoked (e.g. /corven, /growth).
  *
  * All session threads are prompt-based: the user's prompt determines the
- * thread name and is sent to the agent via OpenClaw's POST /hooks/agent.
- * No @mentioning needed — the agent starts working immediately.
+ * thread name and is sent to the agent via OpenClaw Gateway WebSocket RPC
+ * (with HTTP POST fallback). No @mentioning needed — the agent starts
+ * working immediately.
  *
  * Flow:
  * 1. User runs a session command with a prompt
  * 2. Sentinel resolves the target channel (current or routed)
  * 3. Sentinel derives the thread name from the prompt
  * 4. Sentinel creates the thread and adds invoker + agent bot
- * 5. Sentinel calls OpenClaw to kick off the agent with the prompt
+ * 5. Sentinel triggers the agent via WebSocket RPC (or HTTP fallback)
  * 6. Sentinel replies ephemerally with a link to the thread
  */
 

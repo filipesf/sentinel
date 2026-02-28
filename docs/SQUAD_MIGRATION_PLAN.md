@@ -1,7 +1,7 @@
 # Squad Migration Plan — Sentinel × Flare Squads
 
 > **Date:** 2026-02-27 (updated 2026-02-28)
-> **Status:** Phase 1 in progress — code complete, pending server cleanup (`/setup full clean:True`) and end-to-end testing
+> **Status:** Phase 2 in progress — Sentinel code complete (new agents, `/standup`, `/report`), pending OpenClaw agent setup + deployment
 > **Goal:** Restructure the Flare Discord server to support the Growth Squad multi-agent workflow, remove stale channels, and improve how agents format output across channels.
 
 ---
@@ -1135,10 +1135,10 @@ Benefits over regular text channels:
 
 - [ ] Create squad agent workspaces + identities
 - [ ] Add agents to OpenClaw config + peer-based bindings
-- [ ] Update `channelAgentDefaults` to map squad channels to dedicated agents
-- [ ] Implement `/standup` command (multi-embed, agent status collection via webhooks)
-- [ ] Implement `/report` command (weekly/checklist templates)
-- [ ] Add new agents to `agentConfigs` in Sentinel
+- [ ] Update `channelAgentDefaults` to map squad channels to dedicated agents _(code ready, reverted to Corven until agents exist in OpenClaw)_
+- [x] Implement `/standup` command (multi-embed, agent status collection via webhooks)
+- [x] Implement `/report` command (weekly/checklist templates)
+- [x] Add new agents to `agentConfigs` in Sentinel
 - [ ] Run `/setup update`
 - [ ] Set up heartbeats (staggered, 15 min)
 - [ ] Set up daily standup cron job
