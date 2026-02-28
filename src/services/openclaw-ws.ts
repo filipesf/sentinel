@@ -157,6 +157,7 @@ function sendConnect() {
         mode: 'backend' as const,
       },
       role: 'operator',
+      scopes: ['operator.write'],
       auth: {
         token: GATEWAY_TOKEN,
       },

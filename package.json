@@ -4,7 +4,7 @@
   "description": "Discord setup bot that bootstraps and maintains the Flare HQ server",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf dist && tsc",
     "start": "./deploy.sh",
     "stop": "orb run -m openclaw-vm bash -c 'cd /home/filipefernandes/openclaw && set -a && source .env && set +a && docker compose stop sentinel'",
     "restart": "orb run -m openclaw-vm bash -c 'cd /home/filipefernandes/openclaw && set -a && source .env && set +a && docker compose restart sentinel'",

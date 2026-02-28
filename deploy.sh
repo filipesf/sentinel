@@ -31,10 +31,10 @@ sync_files() {
 
 restart_container() {
   echo "[deploy] Restarting sentinel container..."
-  orb run -m openclaw-vm bash -c "cd ${COMPOSE_DIR} && set -a && source .env && set +a && docker compose up -d sentinel"
-  echo "[deploy] Container started."
-  sleep 2
-  orb run -m openclaw-vm bash -c "cd ${COMPOSE_DIR} && set -a && source .env && set +a && docker compose logs --tail 10 sentinel"
+  orb run -m openclaw-vm bash -c "cd ${COMPOSE_DIR} && set -a && source .env && set +a && docker compose up -d sentinel && docker compose restart sentinel"
+  echo "[deploy] Container restarted."
+  sleep 3
+  orb run -m openclaw-vm bash -c "cd ${COMPOSE_DIR} && set -a && source .env && set +a && docker compose logs --tail 15 sentinel"
 }
 
 case "${1:-}" in
