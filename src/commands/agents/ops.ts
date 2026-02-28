@@ -8,12 +8,12 @@ import type { Command } from '../../types.js';
 
 const command: Command = {
   data: new SlashCommandBuilder()
-    .setName('corven')
-    .setDescription('Start a conversation with Corven')
+    .setName('ops')
+    .setDescription('Start an ops session (checklists, tracking, reports)')
     .addStringOption((opt) =>
       opt
         .setName('prompt')
-        .setDescription('What do you want to talk about?')
+        .setDescription('What ops task should the agent work on?')
         .setRequired(true),
     ),
 
@@ -25,13 +25,12 @@ const command: Command = {
     const result = await createSessionThread({
       interaction,
       prompt,
-      agentKey: 'corven',
-      destinationChannel: 'corven', // always routed to #corven
+      destinationChannel: 'ops',
     });
 
     if (result.success) {
       await interaction.editReply({
-        content: `\u{1fab6} Session with Corven \u2192 <#${result.threadId}>`,
+        content: `\u{1f4cb} Ops session \u2192 <#${result.threadId}>`,
       });
     } else {
       await interaction.editReply({

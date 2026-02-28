@@ -2,7 +2,7 @@
  * Flare — Server Architecture as Code
  *
  * This file is the single source of truth the bot reads from.
- * It must stay in sync with SERVER_ARCHITECTURE.md manually.
+ * It must stay in sync with docs/SERVER_ARCHITECTURE.md manually.
  *
  * If you want to change the architecture, change this file
  * and re-run `/setup full`.
@@ -189,147 +189,25 @@ const SP = PermissionFlagsBits.Speak;
 // ─── Categories & Channels ──────────────────────────────────────
 
 export const categories: CategoryConfig[] = [
-  // ── 🧠 PERSONAL ──
+  // ── 🤖 AGENTS (pos 0) ──
   {
-    name: '\u{1f9e0} PERSONAL',
+    name: '\u{1f916} AGENTS',
     position: 0,
     overwrites: [
       { role: '@everyone', allow: [], deny: [V] },
       { role: 'Corven', allow: [V, S, T, R, E], deny: [] },
-      { role: 'Team', allow: [], deny: [V] },
     ],
-    channels: [
-      {
-        name: 'journal',
-        type: ChannelType.GuildText,
-        topic: 'Daily reflections, thoughts, processing',
-        category: '\u{1f9e0} PERSONAL',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'finance',
-        type: ChannelType.GuildText,
-        topic: 'Budgets, expenses, financial planning',
-        category: '\u{1f9e0} PERSONAL',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'reminders',
-        type: ChannelType.GuildText,
-        topic: 'Reminders, deadlines, follow-ups',
-        category: '\u{1f9e0} PERSONAL',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'health',
-        type: ChannelType.GuildText,
-        topic: 'ADHD strategies, wellness, routines',
-        category: '\u{1f9e0} PERSONAL',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'Voice — Personal',
-        type: ChannelType.GuildVoice,
-        topic: '',
-        category: '\u{1f9e0} PERSONAL',
-        overwrites: [],
-        autoArchive: false,
-      },
-    ],
-  },
-
-  // ── 💼 WORK ──
-  {
-    name: '\u{1f4bc} WORK',
-    position: 1,
-    overwrites: [
-      { role: '@everyone', allow: [], deny: [V] },
-      { role: 'Corven', allow: [V, S, T, R, E], deny: [] },
-      { role: 'Team', allow: [V, S, T, R], deny: [] },
-    ],
-    channels: [
-      {
-        name: 'marketing',
-        type: ChannelType.GuildText,
-        topic: 'Marketing strategy, campaigns, content planning',
-        category: '\u{1f4bc} WORK',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'operations',
-        type: ChannelType.GuildText,
-        topic: 'Day-to-day operations, processes, logistics',
-        category: '\u{1f4bc} WORK',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'tasks',
-        type: ChannelType.GuildText,
-        topic: 'Task tracking, to-dos, progress updates',
-        category: '\u{1f4bc} WORK',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'research',
-        type: ChannelType.GuildText,
-        topic: 'Research findings, articles, analysis',
-        category: '\u{1f4bc} WORK',
-        overwrites: [],
-        autoArchive: true,
-      },
-      {
-        name: 'Voice — Work',
-        type: ChannelType.GuildVoice,
-        topic: '',
-        category: '\u{1f4bc} WORK',
-        overwrites: [],
-        autoArchive: false,
-      },
-    ],
-  },
-
-  // ── 🤖 AGENTS ──
-  {
-    name: '\u{1f916} AGENTS',
-    position: 2,
-    overwrites: [{ role: '@everyone', allow: [], deny: [V] }],
     channels: [
       {
         name: 'corven',
         type: ChannelType.GuildText,
         topic: 'Freeform threads with Corven \u{1fab6} \u2014 use /corven',
         category: '\u{1f916} AGENTS',
-        overwrites: [{ role: 'Corven', allow: [V, S, T, R], deny: [] }],
+        overwrites: [],
         autoArchive: true,
       },
       {
-        name: 'agent-sandbox',
-        type: ChannelType.GuildText,
-        topic: 'Testing and experimentation \u2014 use any agent command',
-        category: '\u{1f916} AGENTS',
-        overwrites: [
-          { role: 'Agent', allow: [V, S, T, R], deny: [] },
-          { role: 'Admin', allow: [V, S, T, R], deny: [] },
-        ],
-        autoArchive: true,
-      },
-      {
-        name: 'agent-to-agent',
-        type: ChannelType.GuildText,
-        topic: 'Inter-agent communication',
-        category: '\u{1f916} AGENTS',
-        overwrites: [{ role: 'Agent', allow: [V, S, T, R], deny: [] }],
-        autoArchive: true,
-      },
-      {
-        name: 'Voice — Corven',
+        name: 'Voice \u2014 Corven',
         type: ChannelType.GuildVoice,
         topic: '',
         category: '\u{1f916} AGENTS',
@@ -339,10 +217,63 @@ export const categories: CategoryConfig[] = [
     ],
   },
 
-  // ── 🔧 META ──
+  // ── 🚀 SQUADS (pos 1) ──
+  {
+    name: '\u{1f680} SQUADS',
+    position: 1,
+    overwrites: [
+      { role: '@everyone', allow: [], deny: [V] },
+      { role: 'Corven', allow: [V, S, T, R, E], deny: [] },
+      { role: 'Team', allow: [V, S, T, R], deny: [] },
+    ],
+    channels: [
+      {
+        name: 'growth',
+        type: ChannelType.GuildText,
+        topic: 'Campaigns, outbound, ICP, lead lists \u2014 use /growth or /leads',
+        category: '\u{1f680} SQUADS',
+        overwrites: [],
+        autoArchive: true,
+      },
+      {
+        name: 'content',
+        type: ChannelType.GuildText,
+        topic: 'Posts, copy, CTAs, content calendar \u2014 use /content',
+        category: '\u{1f680} SQUADS',
+        overwrites: [],
+        autoArchive: true,
+      },
+      {
+        name: 'ops',
+        type: ChannelType.GuildText,
+        topic: 'Checklists, tracking, weekly reports \u2014 use /ops',
+        category: '\u{1f680} SQUADS',
+        overwrites: [],
+        autoArchive: true,
+      },
+      {
+        name: 'research',
+        type: ChannelType.GuildText,
+        topic: 'Blog-roll style: compact research summaries',
+        category: '\u{1f680} SQUADS',
+        overwrites: [],
+        autoArchive: true,
+      },
+      {
+        name: 'squad-feed',
+        type: ChannelType.GuildText,
+        topic: 'Daily standups, agent status, decisions \u2014 Mission Control visibility',
+        category: '\u{1f680} SQUADS',
+        overwrites: [],
+        autoArchive: true,
+      },
+    ],
+  },
+
+  // ── 🔧 META (pos 2) ──
   {
     name: '\u{1f527} META',
-    position: 3,
+    position: 2,
     overwrites: [
       { role: '@everyone', allow: [], deny: [V] },
       { role: 'Agent', allow: [], deny: [V] },
@@ -384,13 +315,15 @@ export const categories: CategoryConfig[] = [
 ];
 
 // ─── Agent access map ───────────────────────────────────────────
-// Used by /corven command to validate channel access
+// Used by session commands to validate channel access
 
 export interface AgentConfig {
   name: string;
   /** Role name for the managed bot role (used for channel overwrites + bot discovery) */
   roleName: string;
   emoji: string;
+  /** Embed sidebar color (decimal) */
+  color: number;
   /** Categories this agent has ViewChannel access to */
   accessibleCategories: string[];
   /** Specific channels where access is denied despite category access */
@@ -402,11 +335,41 @@ export const agentConfigs: Record<string, AgentConfig> = {
     name: 'Corven',
     roleName: 'Corven',
     emoji: '\u{1fab6}',
-    accessibleCategories: [
-      '\u{1f9e0} PERSONAL',
-      '\u{1f4bc} WORK',
-      '\u{1f916} AGENTS',
-    ],
+    color: 15247484, // #e8a87c
+    accessibleCategories: ['\u{1f916} AGENTS', '\u{1f680} SQUADS'],
     deniedChannels: [],
   },
+};
+
+// ─── Command Routing ────────────────────────────────────────────
+// Maps command names to their destination channel.
+// null = contextual (output in current channel).
+
+export const commandRouting: Record<string, string | null> = {
+  // Contextual
+  session: null,
+
+  // Sector shorthands (routed to home channel)
+  corven: 'corven',
+  growth: 'growth',
+  content: 'content',
+  ops: 'ops',
+  leads: 'growth', // leads are a growth activity
+
+  // Activity commands (routed to destination)
+  decision: 'squad-feed',
+};
+
+// ─── Channel → Agent Defaults ───────────────────────────────────
+// When /session is used without an agent parameter, the default agent
+// is resolved from the channel. Phase 1: everything → corven.
+// Phase 2: each squad channel maps to its dedicated agent.
+
+export const channelAgentDefaults: Record<string, string> = {
+  corven: 'corven',
+  research: 'corven',
+  growth: 'corven',
+  content: 'corven',
+  ops: 'corven',
+  'squad-feed': 'corven',
 };

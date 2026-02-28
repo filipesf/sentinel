@@ -32,6 +32,26 @@ export function createThreadTitle(message: string, date?: Date): string {
 }
 
 /**
+ * Derive a thread name from a user prompt.
+ * Strips markdown formatting and special chars, truncates to ~80 chars.
+ * Used by session commands to name threads after the prompt.
+ */
+export function deriveThreadName(prompt: string): string {
+  const cleaned = prompt
+    // Strip markdown bold/italic/code
+    .replace(/[*_`~#>]/g, '')
+    // Collapse whitespace
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  if (cleaned.length <= THREAD_TITLE_MAX_LENGTH) {
+    return cleaned;
+  }
+
+  return `${cleaned.slice(0, THREAD_TITLE_MAX_LENGTH).trimEnd()}\u2026`;
+}
+
+/**
  * Sleep for a given number of milliseconds.
  * Useful for rate limit handling.
  */
