@@ -1,7 +1,7 @@
 # Squad Migration Plan — Sentinel × Flare Squads
 
-> **Date:** 2026-02-27
-> **Status:** Approved (locked on recommendations)
+> **Date:** 2026-02-27 (updated 2026-02-28)
+> **Status:** Phase 1 in progress — code complete, pending server cleanup (`/setup full clean:True`) and end-to-end testing
 > **Goal:** Restructure the Flare Discord server to support the Growth Squad multi-agent workflow, remove stale channels, and improve how agents format output across channels.
 
 ---
@@ -1082,8 +1082,8 @@ Benefits over regular text channels:
 
 - [x] Update `server-architecture.ts`: remove PERSONAL + WORK, AGENTS (pos 0), SQUADS (pos 1), META (pos 2)
 - [x] Add `commandRouting`, `channelAgentDefaults` to architecture config
-- [x] Deploy Sentinel (`npm run build`)
-- [ ] Run `/setup full clean:True` from `#bot-commands`
+- [x] Deploy Sentinel (`npm run build` + `./deploy.sh`)
+- [ ] Run `/setup full clean:True` from `#bot-commands` — removes old PERSONAL/WORK categories
 - [ ] Verify structure (`/setup verify`)
 
 **OpenClaw integration (WebSocket RPC + HTTP fallback):**
@@ -1093,6 +1093,7 @@ Benefits over regular text channels:
 - [x] Implement `openclaw-client.ts` — Dual-path agent trigger (WS RPC primary, HTTP hooks fallback)
 - [x] Implement `deriveThreadName()` helper — truncate prompt to ~80 chars, strip markdown
 - [x] Connect WebSocket on startup (`src/index.ts`)
+- [x] Fix `operator.write` scope in WS connect params (was missing, caused RPC failures)
 
 **Slash commands:**
 
@@ -1100,8 +1101,9 @@ Benefits over regular text channels:
 - [x] Implement `/session prompt [agent]` — contextual, mandatory prompt, trigger agent via WS RPC
 - [x] Implement sector shorthands with prompt (`/growth`, `/content`, `/ops`, `/leads`)
 - [x] Implement `/decision` with embed builder
-- [x] Register new commands (`npm run deploy`)
-- [ ] Test: `/corven prompt:"test"` from `#research` → thread in `#corven`, Corven responds
+- [x] Register new commands (`./deploy.sh commands`)
+- [x] Test: `/corven prompt:"..."` from `#bot-commands` → thread in `#corven`, Corven responds _(tested, worked via HTTP fallback before scope fix)_
+- [ ] Test: `/corven prompt:"..."` via WS RPC (after scope fix) → verify no fallback needed
 - [ ] Test: `/growth prompt:"test"` from `#corven` → thread in `#growth`, agent responds
 - [ ] Test: `/leads prompt:"test"` from anywhere → thread in `#growth`, agent responds
 - [ ] Test: `/session prompt:"test"` in `#research` → thread in `#research`, Corven responds
@@ -1114,6 +1116,9 @@ Benefits over regular text channels:
 - [x] Add per-channel `systemPrompt` entries for squad channels
 - [x] Add explicit channel allowlist in guild config (corven, growth, content, ops, research, squad-feed)
 - [x] Restart OpenClaw gateway
+- [x] Fix cron job delivery targets — research jobs → `#research`, checkpoints → `#corven` (were pointing to deleted channels)
+- [x] Update research cron prompts to use Research Card template
+- [x] Remove 2 disabled legacy checkpoint cron jobs
 - [ ] Test: Corven responds with blog-roll format in `#research`
 - [ ] Test: Corven responds with campaign brief format in `#growth`
 
@@ -1124,6 +1129,7 @@ Benefits over regular text channels:
 - [x] Create `HOOKS_THREAD_DELIVERY_RESOLUTION.md` — root cause analysis + protocol reference
 - [x] Delete stale docs (BUILD_PLAN.md, SESSION_SUMMARY.md, DISCORD_JS_REFERENCE.md, HOOKS_THREAD_DELIVERY_DEBUG_REPORT.md)
 - [x] Move remaining docs to `docs/` directory
+- [x] Update `SQUAD_MIGRATION_PLAN.md` — sync hook refs to WS RPC, update execution checklist
 
 ### Phase 2: Multi-Agent + Automation (when ready)
 
